@@ -1,17 +1,16 @@
 package components;
 
+import java.awt.Font;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
+import javax.swing.event.*;
+import javax.swing.text.*;
 
 import utils.*;
 
 public class FontTypeOperations {
-    private EditorPane textPane;
+    
+    private EditorPane editorPane;
     private JMenu fontTypeMenu;
     private static final String[] fontTypes = {
         "OCR A Extended",
@@ -19,10 +18,14 @@ public class FontTypeOperations {
         "Courier New",
         "Verdana",
         "Wide Latin",
+        "Aptos Display",
+        "Papyrus",
+        "Jokerman",
+        "Jujutsu Kaisen", // remove before submission
     };
 
-    public FontTypeOperations(EditorPane textPane) {
-        this.textPane = textPane;
+    public FontTypeOperations(EditorPane editorPane) {
+        this.editorPane = editorPane;
         fontTypeMenu = new JMenu(" Font Menu");
         fontTypeMenu.setFont(Constants.controlsFont18);
         Helper.setColor(fontTypeMenu, Constants.main, Constants.text);
@@ -57,7 +60,7 @@ public class FontTypeOperations {
     private JMenuItem createMenuItem(String text, ActionListener listener) {
         JMenuItem menuItem = new JMenuItem(text);
         Helper.setColor(menuItem, Constants.main, Constants.text);
-        menuItem.setFont(Constants.controlsFont16);
+        menuItem.setFont(new Font(text, Font.PLAIN, 18));
         menuItem.addActionListener(listener);
         return menuItem;
     }
@@ -65,14 +68,14 @@ public class FontTypeOperations {
     private void changeFontType(String fontType) {
         if (fontType == null) return;
 
-        StyleConstants.setFontFamily(textPane.getCurrentAttributes(), fontType);
-        int start = textPane.getTextPane().getSelectionStart();
-        int end = textPane.getTextPane().getSelectionEnd();
+        StyleConstants.setFontFamily(editorPane.getCurrentAttributes(), fontType);
+        int start = editorPane.getTextPane().getSelectionStart();
+        int end = editorPane.getTextPane().getSelectionEnd();
         if (start != end) {
-            StyledDocument doc = textPane.getTextPane().getStyledDocument();
-            doc.setCharacterAttributes(start, end - start, textPane.getCurrentAttributes(), false);
+            StyledDocument doc = editorPane.getTextPane().getStyledDocument();
+            doc.setCharacterAttributes(start, end - start, editorPane.getCurrentAttributes(), false);
         } else {
-            textPane.getTextPane().setCharacterAttributes(textPane.getCurrentAttributes(), true);
+            editorPane.getTextPane().setCharacterAttributes(editorPane.getCurrentAttributes(), true);
         }
     }
 }

@@ -14,13 +14,13 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setUndecorated(true);
 
-        EditorPane textPane = new EditorPane();
-        add(textPane, BorderLayout.CENTER);
+        EditorPane editorPane = new EditorPane();
+        add(editorPane, BorderLayout.CENTER);
 
-        TitleBar titleBar = new TitleBar(this, textPane);
+        TitleBar titleBar = new TitleBar(this, editorPane);
         add(titleBar, BorderLayout.NORTH);
 
-        TextSettingsPanel textSettingsPanel = new TextSettingsPanel(textPane);
+        TextSettingsPanel textSettingsPanel = new TextSettingsPanel(editorPane);
         add(textSettingsPanel, BorderLayout.SOUTH);
 
         JRootPane rootPane = getRootPane();

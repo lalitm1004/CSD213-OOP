@@ -1,9 +1,7 @@
 package components;
 
-
-import java.awt.event.*;
 import java.io.*;
-
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.StyledDocument;
@@ -12,16 +10,17 @@ import javax.swing.text.rtf.RTFEditorKit;
 import utils.*;
 
 public class FileOperations {
+
     private JMenu fileMenu;
 
-    public FileOperations(EditorPane textPane) {
+    public FileOperations(EditorPane editorPane) {
         fileMenu = new JMenu("File");
         fileMenu.setFont(Constants.controlsFont18);
         fileMenu.setForeground(Constants.text);
 
-        JMenuItem newFile = createMenuItem("New", _ -> textPane.getTextPane().setText(""));
-        JMenuItem open = createMenuItem("Open", _ -> openFile(textPane));
-        JMenuItem save = createMenuItem("Save", _ -> saveFile(textPane));
+        JMenuItem newFile = createMenuItem("New", _ -> editorPane.getTextPane().setText(""));
+        JMenuItem open = createMenuItem("Open", _ -> openFile(editorPane));
+        JMenuItem save = createMenuItem("Save", _ -> saveFile(editorPane));
 
         fileMenu.add(newFile);
         fileMenu.add(open);
@@ -55,13 +54,13 @@ public class FileOperations {
         }
     }
 
-    private void saveFile(EditorPane textPane) {
+    private void saveFile(EditorPane editorPane) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("RTF Files", "rtf"));
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             try (FileOutputStream fos = new FileOutputStream(fileChooser.getSelectedFile())) {
                 RTFEditorKit rtfEditorKit = new RTFEditorKit();
-                rtfEditorKit.write(fos, textPane.getTextPane().getStyledDocument(), 0, textPane.getTextPane().getStyledDocument().getLength());
+                rtfEditorKit.write(fos, editorPane.getTextPane().getStyledDocument(), 0, editorPane.getTextPane().getStyledDocument().getLength());
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

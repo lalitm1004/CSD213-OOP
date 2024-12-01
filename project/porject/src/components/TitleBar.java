@@ -1,15 +1,15 @@
 package components;
 
-
 import java.awt.*;
 import javax.swing.*;
 
 import utils.*;
 
 public class TitleBar extends JPanel {
+    
     public TitleBar(
         JFrame textEditorFrame,
-        EditorPane textPane
+        EditorPane editorPane
     ) {
         setLayout(new BorderLayout());
         setBackground(Constants.main);
@@ -22,7 +22,7 @@ public class TitleBar extends JPanel {
         projectTitle.setForeground(Constants.accent);
         projectTitle.setFont(Constants.controlsFont18);
 
-        JMenu fileMenu = new FileOperations(textPane).getMenu();
+        JMenu fileMenu = new FileOperations(editorPane).getMenu();
 
         // custom window controls
         JButton closeButton = new JButton("x");

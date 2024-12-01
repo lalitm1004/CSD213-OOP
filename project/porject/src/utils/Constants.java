@@ -8,8 +8,12 @@ public class Constants {
     public static Color accent = new Color(0x5E78A8);
     public static Color text = new Color(0xC8D0EE);
     public static Color destructive = new Color(0xEA9999);
+    public static Color active = new Color(0x286090);
 
     // fonts
     public static Font controlsFont18 = new Font("OCR A Extended", Font.PLAIN, 18);
     public static Font controlsFont16 = new Font("OCR A Extended", Font.PLAIN, 16);
+
+    // default font size
+    public static int defaultFontSize = 20;
 }
