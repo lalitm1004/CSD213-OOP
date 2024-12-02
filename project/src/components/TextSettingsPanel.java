@@ -15,6 +15,9 @@ public class TextSettingsPanel extends JPanel {
     private JButton boldButton;
     private JButton italicButton;
     private JLabel tokenCountLabel;
+    private JTextArea findTextArea;
+    private JTextArea replaceTextArea;
+
     private int fontSize = Constants.defaultFontSize;
     private static final int MAX_FONT_SIZE = 96;
     private static final int MIN_FONT_SIZE = 12;
@@ -43,7 +46,7 @@ public class TextSettingsPanel extends JPanel {
         JButton decreaseButton = createFontSettingButton("- ", _ -> changeFontSize(-2));
         JButton increaseButton = createFontSettingButton(" +", _ -> changeFontSize(2));
 
-        fontSizeLabel = new JLabel("Font size > " + fontSize);
+        fontSizeLabel = new JLabel("Font size:" + fontSize);
         fontSizeLabel.setFont(Constants.controlsFont18);
         fontSizeLabel.setForeground(Constants.text);
 
@@ -91,6 +94,76 @@ public class TextSettingsPanel extends JPanel {
             public void changedUpdate(DocumentEvent e) {}
         });
 
+        // separator
+        addSeparatorLabel();
+
+        JLabel findLabel = new JLabel("Find > ");
+        findLabel.setForeground(Constants.text);
+        findLabel.setFont(Constants.controlsFont18);
+        add(findLabel);
+
+        findTextArea = new JTextArea("");
+        findTextArea.setPreferredSize(new Dimension(75, 20));
+        Helper.setColor(findTextArea, Constants.main, Constants.text);
+        findTextArea.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Constants.accent));
+        findTextArea.setFont(Constants.controlsFont16);
+        
+        findTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                findInEditor();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                findInEditor();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                findInEditor();
+            }
+
+            private void findInEditor() {
+                String searchText = findTextArea.getText().trim();
+                findText(searchText);
+            }
+        });
+        add(findTextArea);
+
+
+        JLabel replaceLabel = new JLabel(" Replace > ");
+        replaceLabel.setForeground(Constants.text);
+        replaceLabel.setFont(Constants.controlsFont18);
+        add(replaceLabel);
+
+        replaceTextArea = new JTextArea("");
+        replaceTextArea.setPreferredSize(new Dimension(75, 20));
+        Helper.setColor(replaceTextArea, Constants.main, Constants.text);
+        replaceTextArea.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Constants.accent));
+        replaceTextArea.setFont(Constants.controlsFont16);
+        add(replaceTextArea);
+
+        // separator
+        addSeparatorLabel();
+
+        JButton replaceButton = new JButton("Replace");
+        Helper.setColor(replaceButton, Constants.main, Constants.text);
+        replaceButton.setPreferredSize(new Dimension(100, 20));
+        replaceButton.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Constants.accent));
+        replaceButton.setFont(Constants.controlsFont18);
+
+        replaceButton.addActionListener(_ -> {
+            String searchText = findTextArea.getText().trim();
+            String replaceText = replaceTextArea.getText().trim();
+
+            if (!searchText.isEmpty()) {
+                replaceText(searchText, replaceText);
+            }
+        });
+
+        add(replaceButton);
+
         // input maps
 
         InputMap inputMap = editorPane.getTextPane().getInputMap(JComponent.WHEN_FOCUSED);
@@ -126,6 +199,39 @@ public class TextSettingsPanel extends JPanel {
         });
     }
 
+    private void findText(String searchText) {
+        removeHighlights();
+        if (searchText == null || searchText.isEmpty()) return;
+
+        Highlighter highlighter = editorPane.getTextPane().getHighlighter();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Constants.accent);
+
+        String text = editorPane.getTextPane().getText();
+        int pos = 0;
+        while ((pos = text.indexOf(searchText, pos)) >= 0) {
+            try {
+                highlighter.addHighlight(pos, pos + searchText.length(), painter);
+                pos += searchText.length();
+            } catch (Exception e) {}
+        }
+
+    }
+
+    private void replaceText(String searchText, String replaceText) {
+        if (searchText == null || searchText.isEmpty()) return;
+        
+        String text = editorPane.getTextPane().getText();
+        String updatedText = text.replaceAll(searchText, replaceText);
+
+        editorPane.getTextPane().setText(updatedText);
+        findText(searchText);
+    }
+
+    private void removeHighlights() {
+        Highlighter highlighter = editorPane.getTextPane().getHighlighter();
+        highlighter.removeAllHighlights();
+    }
+
     private JButton createFontSettingButton(String text, ActionListener listener) {
         JButton button = new JButton(text);
         Helper.setColor(button, Constants.main, Constants.text);
@@ -147,7 +253,7 @@ public class TextSettingsPanel extends JPanel {
         fontSize += delta;
         if (fontSize < MIN_FONT_SIZE) fontSize = MIN_FONT_SIZE;
         if (fontSize > MAX_FONT_SIZE) fontSize = MAX_FONT_SIZE;
-        fontSizeLabel.setText("Font size > " + fontSize);
+        fontSizeLabel.setText("Font size:" + fontSize);
 
         StyleConstants.setFontSize(editorPane.getCurrentAttributes(), fontSize);
 

@@ -21,7 +21,7 @@ public class FontTypeOperations {
         "Aptos Display",
         "Papyrus",
         "Jokerman",
-        "Jujutsu Kaisen", // remove before submission
+        // "Jujutsu Kaisen", // remove before submission
     };
 
     public FontTypeOperations(EditorPane editorPane) {
