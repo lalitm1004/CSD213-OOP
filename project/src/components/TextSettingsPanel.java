@@ -16,7 +16,7 @@ public class TextSettingsPanel extends JPanel {
     private JButton italicButton;
     private JLabel tokenCountLabel;
     private int fontSize = Constants.defaultFontSize;
-    private static final int MAX_FONT_SIZE = 40;
+    private static final int MAX_FONT_SIZE = 96;
     private static final int MIN_FONT_SIZE = 12;
     private EditorPane editorPane;
     private boolean isBold = false;
