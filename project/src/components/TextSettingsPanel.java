@@ -59,7 +59,7 @@ public class TextSettingsPanel extends JPanel {
 
         // separator
         addSeparatorLabel();
-        
+
         // font modifiers
         boldButton = createFontSettingButton("B ", _ -> toggleBoldModifier());
 
@@ -105,9 +105,10 @@ public class TextSettingsPanel extends JPanel {
         findTextArea = new JTextArea("");
         findTextArea.setPreferredSize(new Dimension(75, 20));
         Helper.setColor(findTextArea, Constants.main, Constants.text);
+        findTextArea.setCaretColor(Constants.text);
         findTextArea.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Constants.accent));
         findTextArea.setFont(Constants.controlsFont16);
-        
+
         findTextArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -140,6 +141,7 @@ public class TextSettingsPanel extends JPanel {
         replaceTextArea = new JTextArea("");
         replaceTextArea.setPreferredSize(new Dimension(75, 20));
         Helper.setColor(replaceTextArea, Constants.main, Constants.text);
+        replaceTextArea.setCaretColor(Constants.text);
         replaceTextArea.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Constants.accent));
         replaceTextArea.setFont(Constants.controlsFont16);
         add(replaceTextArea);
@@ -189,13 +191,13 @@ public class TextSettingsPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleBoldModifier();
-            } 
+            }
         });
         actionMap.put("toggleItalicModifier", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleItalicModifier();
-            } 
+            }
         });
     }
 
@@ -208,18 +210,36 @@ public class TextSettingsPanel extends JPanel {
 
         String text = editorPane.getTextPane().getText();
         int pos = 0;
-        while ((pos = text.indexOf(searchText, pos)) >= 0) {
-            try {
-                highlighter.addHighlight(pos, pos + searchText.length(), painter);
-                pos += searchText.length();
-            } catch (Exception e) {}
-        }
+        int offset = 0;
 
+        for (int i = 0; i < text.length(); i++) {
+            char currentChar = text.charAt(i);
+
+            if (pos == i) {
+                int adjustedStart = pos - offset;
+                int adjustedEnd = adjustedStart + searchText.length();
+
+                if (adjustedEnd > adjustedStart && adjustedEnd <= text.length()) {
+                    try {
+                        highlighter.addHighlight(adjustedStart, adjustedEnd, painter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                pos = text.indexOf(searchText, i + 1);
+            }
+
+            if (currentChar == '\n') {
+                offset++;
+            }
+        }
     }
+
 
     private void replaceText(String searchText, String replaceText) {
         if (searchText == null || searchText.isEmpty()) return;
-        
+
         String text = editorPane.getTextPane().getText();
         String updatedText = text.replaceAll(searchText, replaceText);
 
