@@ -3,10 +3,11 @@ package components;
 import java.awt.*;
 import javax.swing.*;
 
+import components.sketchpad.SketchFrame;
 import utils.*;
 
 public class TitleBar extends JPanel {
-    
+
     public TitleBar(
         JFrame textEditorFrame,
         EditorPane editorPane
@@ -38,8 +39,27 @@ public class TitleBar extends JPanel {
 
         menuBar.add(projectTitle);
         menuBar.add(fileMenu);
+        menuBar.add(getSeparatorLabel());
+
+        JButton sketchButton = new JButton("Sketchpad");
+        Helper.setColor(sketchButton, Constants.main, Constants.text);
+        sketchButton.setBorder(BorderFactory.createEmptyBorder());
+        sketchButton.setFont(Constants.controlsFont18);
+        sketchButton.addActionListener(_ -> {
+            SketchFrame.sketchFrame.setVisible(true);
+        });
+
+        menuBar.add(sketchButton);
+
 
         add(menuBar, BorderLayout.CENTER);
         add(windowControls, BorderLayout.EAST);
+    }
+
+    private JLabel getSeparatorLabel() {
+        JLabel separatorLabel = new JLabel(" | ");
+        Helper.setColor(separatorLabel, Constants.main, Constants.accent);
+        separatorLabel.setFont(Constants.controlsFont18);
+        return separatorLabel;
     }
 }
